@@ -1,21 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- ░░░ General metadata ░░░ -->
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <!-- Compile against the concrete .NET 8 runtime (required for NativeAOT) -->
+    <TargetFramework>net8.0</TargetFramework>
+
+    <!-- Build a .dll / .so / .dylib, not an EXE -->
+    <OutputType>Library</OutputType>
+
+    <!-- Nullable warnings -->
     <Nullable>enable</Nullable>
+
+    <!-- Informational stuff (unchanged) -->
     <Version>$(VersionPrefix)1.3.0</Version>
     <RepositoryUrl>https://github.com/kaiidams/NeMoOnnxSharp</RepositoryUrl>
-    <PackageTags>nemo onnx text-to-speech csharp speech tts speech-synthesis speech-recognition asr</PackageTags>
-    <Copyright>Copyright (C) 2022 Katsuya Iida. All rights reserved.</Copyright>
-    <Description>Text-to-speech and speech recognition, VAD with NVIDIA NeMo and ONNX Runtime for .NET Core.</Description>
+    <PackageTags>nemo onnx asr</PackageTags>
     <PackageProjectUrl>https://github.com/kaiidams/NeMoOnnxSharp</PackageProjectUrl>
-    <Authors>Katsuya Iida</Authors>
-    <Company />
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
+  <!-- ░░░ NativeAOT-specific flags ░░░ -->
+  <PropertyGroup>
+    <!-- Turn on ahead-of-time compilation when you run `dotnet publish` -->
+    <PublishAot>true</PublishAot>
+
+    <!-- Bundle the .NET runtime inside the library so no CLR is needed on the
+         target device -->
+    <SelfContained>true</SelfContained>
+
+    <!-- Produce a **shared** native library ( .so / .dll / .dylib )
+             If you later need a static lib for iOS you can override via
+             `dotnet publish -p:NativeLib=Static -r ios-arm64` -->
+    <NativeLib>Shared</NativeLib>
+    <NativeLibStatic>false</NativeLibStatic>
+
+    <!-- Remove culture-specific tables (saves ~1 MB) -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!-- Strip debug symbols in the final binary -->
+    <StripSymbols>true</StripSymbols>
+
+    <!-- Allow pointer arithmetic (`float*`, etc.) used in the exports -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- Import NDK pressets -->
+  <Import Project="BionicNativeAot.targets"/>
+
+  <!-- ░░░ NuGet dependencies ░░░ -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.16.0" />
+    <!-- Pure-managed wrapper for ONNX Runtime, linked statically by AOT -->
+    <PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.17.0" />
   </ItemGroup>
 
 </Project>

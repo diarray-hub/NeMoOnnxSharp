@@ -11,6 +11,10 @@ namespace NeMoOnnxSharp.Models
     {
         public const string EnglishVocabulary = " abcdefghijklmnopqrstuvwxyz'_";
         public const string GermanVocabulary = " abcdefghijklmnopqrstuvwxyzäöüß_";
+        // Add the QuartzNet vocabulary after Bambara Training
+        // Reminder: This might need update after further training
+        // "_" represents the blank token in CTC
+        public const string BambaraVocabulary = "0123456789abcdefghijklmnopqrstuvwxyz '-ŋɔɛɲɓɾ_";
 
         public string? vocabulary;
     }
