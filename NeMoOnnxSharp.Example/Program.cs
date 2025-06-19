@@ -54,12 +54,13 @@ namespace NeMoOnnxSharp.Example
         {
             string appDirPath = AppDomain.CurrentDomain.BaseDirectory;
             string modelPath = await DownloadModelAsync("stt_en_quartznet15x5");
+            //string modelPath = "stt-bm-quartznet15x5-V0.onnx";
             string inputDirPath = Path.Combine(appDirPath, "..", "..", "..", "..", "test_data");
             string inputPath = Path.Combine(inputDirPath, "transcript.txt");
             var config = new EncDecCTCConfig
             {
                 modelPath = modelPath,
-                vocabulary = EncDecCTCConfig.EnglishVocabulary
+                vocabulary = EncDecCTCConfig.BambaraVocabulary
             };
             using var model = new EncDecCTCModel(config);
             using var reader = File.OpenText(inputPath);
@@ -74,6 +75,13 @@ namespace NeMoOnnxSharp.Example
                 string predictText = model.Transcribe(audioSignal);
                 Console.WriteLine("{0}|{1}|{2}", name, targetText, predictText);
             }
+
+            /*string name = "mono_8s_44k.wav";
+            string waveFile = Path.Combine(inputDirPath, name);
+            var audioSignal = WaveFile.ReadWAV(waveFile, model.SampleRate);
+            string predictText = model.Transcribe(audioSignal);
+            Console.WriteLine("{0}|{1}", name, predictText);*/
+
         }
 
         /// <summary>
