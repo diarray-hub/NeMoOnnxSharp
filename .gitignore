@@ -351,3 +351,6 @@ MigrationBackup/
 
 # ONNX runtime
 *.onnx
+
+# Ignore the Android NDK
+android-ndk-r27c/
